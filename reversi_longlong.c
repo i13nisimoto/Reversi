@@ -32,7 +32,7 @@ void setPoint(uchar col, uchar row,uchar c){
 
 }
 void loop(){
-  for(int i=0;i<1;i++){
+  for(int i=0;i<10;i++){
     char tmp[3]={};
     getPoint(tmp);//0,1 は座標　2は色
 
@@ -41,18 +41,19 @@ void loop(){
 
   }
 }
-void getPoint(char* tmp){
-  /*
+void getPoint(char* tmp){//この中で手番の行動を記述する
+
   tmp[0]=GetRandom(0,7);
   printf("%d,",tmp[0] );
   tmp[1]=GetRandom(0,7);
   printf("%d,",tmp[1] );
   tmp[2]=GetRandom(0,1);
   printf("%d\n",tmp[2] );
-*/
-  tmp[0]=5;
+
+  /*tmp[0]=5;
   tmp[1]=5;
   tmp[2]=0;
+  */
 }
 int GetRandom(int min,int max){
 	return min + (int)(rand()*(max-min+1.0)/(1.0+RAND_MAX));
@@ -63,7 +64,7 @@ void debug(){
   putBinary(bit_Board.color[1]);
 }
 void init(){
-
+  //AI実装するならここでユーザー選択
 }
 void putBinary(board x)
 {
@@ -74,39 +75,3 @@ void putBinary(board x)
     }
     putchar('\n');
 }
-/*
-unsigned long long bitboard[2]={};
-void init(){
-
-}
-unsigned char getPoint(unsigned char x,unsigned char y){
-  unsigned short tmp;
-  const unsigned short mask=3;
-  return tmp=(bitmap[y]>>((7-x)*2))&mask;
-}
-
-void printMap(){
-  for(int i=0;i<HEIGHT;i++){
-    for(int j=0;j<WIDTH;j++){
-      printf("%d",getPoint(j,i));
-    }
-    printf("\n");
-  }
-}
-void setPoint(unsigned char x,unsigned char y,unsigned char color){
-  unsigned short mask=3;
-  mask=~(mask<<((7-x)*2));
-  bitmap[y]&=mask;
-  mask=(short)color;
-  mask=(mask<<((7-x)*2));
-  bitmap[y]=bitmap[y]|mask;
-}
-void
-void debug(){
-
-}
-int main(){
-  init();
-  debug();
-}
-*/
