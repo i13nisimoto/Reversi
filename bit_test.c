@@ -28,7 +28,7 @@ void setPoint(unsigned char x,unsigned char y,unsigned char color){
   mask=(mask<<((7-x)*2));
   bitmap[y]=bitmap[y]|mask;
 }
-
+void
 void debug(){
 
 }
