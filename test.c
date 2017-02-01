@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <stdlib.h>
 #define INPUT_ERROR 3
 
 #define PASS 1
@@ -23,6 +23,7 @@ typedef struct BOARD{
 void Init(BOARD *board);                            // 局面を初期化する関数
 void ShowBoard(BOARD *board);                       // 盤面を表示する関数
 unsigned long long GetPos();                                  // 座標を入力させ、posを返す関数
+unsigned long long GetPos_AI();
 unsigned long long PosTranslate(int file, int rank);         // 座標をunsigned long longのposに変換する関数
 void Put(BOARD *board, unsigned long long pos);               // 石を置く関数 posは絶対に合法手
 unsigned long long GenValidMove(const BOARD *board);          // 合法手を生成する関数
@@ -31,6 +32,8 @@ int CheckFinishPass(BOARD *board);                  // 終了・パス判定
 int NumOfStone(unsigned long long bits);                      //石の個数計測
 int ShowResult(BOARD *board);                       //結果出力
 void GameManVsMan(void);                            //Man vs Man
+void GameManVsAI(void);
+void GameAIVsAI(void);
 /*int main(void){
     BOARD board;
     unsigned long long pos, valid;
@@ -68,11 +71,13 @@ int main(void){
     int game_mode;
 
     while(1){
-        printf("モードを選択してください。\n 先手 vs 後手\n0: 人 vs 人\n9: 終了\n");
+        printf("モードを選択してください。\n 先手 vs 後手\n0: 人 vs 人\n1: 人 vs AI\n2: AI vs AI\n9: 終了\n");
         scanf("%d", &game_mode);
 
         switch(game_mode){
             case 0: GameManVsMan(); break;
+            case 1: GameManVsAI();break;
+            case 2: GameAIVsAI();break;
             case 9: printf("終了します。\n"); return 0;
             default: printf("エラー。もう一度入力してください\n"); break;
         }
@@ -98,6 +103,80 @@ void GameManVsMan(void){
             continue;
         }else if( (pos & valid) == 0){
             printf("非合法手です。\n");
+            continue;
+        }
+        Put(&board, pos);
+        ShowBoard(&board);
+
+        CheckFinishPass(&board);
+    }
+
+    ShowResult(&board);
+
+    return;
+}
+
+void GameManVsAI(void){
+    BOARD board;
+    unsigned long long pos, valid;
+
+    Init(&board);
+    ShowBoard(&board);
+
+    // 石を置く
+    while(board.teban != GAME_OVER){
+        // 合法手を得る
+
+        valid = GenValidMove(&board);
+        // 手を受け取る
+        switch (board.teban) {
+          case SENTE:pos = GetPos();break;
+          case GOTE:pos=GetPos_AI(valid);break;
+          default :printf("%s\n","err" );break;
+        }
+
+        if( pos == INPUT_ERROR ){
+            printf("エラーです。\n");
+            continue;
+        }else if( (pos & valid) == 0){
+            //printf("非合法手です。\n");
+            continue;
+        }
+        Put(&board, pos);
+        ShowBoard(&board);
+
+        CheckFinishPass(&board);
+    }
+
+    ShowResult(&board);
+
+    return;
+}
+
+void GameAIVsAI(void){
+    BOARD board;
+    unsigned long long pos, valid;
+
+    Init(&board);
+    ShowBoard(&board);
+
+    // 石を置く
+    while(board.teban != GAME_OVER){
+        // 合法手を得る
+
+        valid = GenValidMove(&board);
+        // 手を受け取る
+        switch (board.teban) {
+          case SENTE:pos = GetPos_AI(valid);break;
+          case GOTE:pos=GetPos_AI(valid);break;
+          default :printf("%s\n","err" );break;
+        }
+
+        if( pos == INPUT_ERROR ){
+            printf("エラーです。\n");
+            continue;
+        }else if( (pos & valid) == 0){
+            //printf("非合法手です。\n");
             continue;
         }
         Put(&board, pos);
@@ -170,16 +249,35 @@ int ShowResult(BOARD *board){
 }
 // 座標を入力させ、posを返す関数
 unsigned long long GetPos(){
-    int file;  // 列番号（アルファベット）
-    int rank;   // 行番号（数字）
+    int file;  // 列番号
+    int rank;   // 行番号
     unsigned long long pos;   // 指定箇所を示すビットボード
 
     printf("座標を入力してください。(例:f5)\n");
     scanf(" %d%d", &file, &rank);
 
     // 受け取った座標からビットボードを生成
-    pos = PosTranslate(file+1, rank+1);
+    pos = PosTranslate(7-file, rank+1);
     return pos;
+}
+unsigned long long GetPos_AI(unsigned long long valid){
+  int file;  // 列番号
+  int rank;   // 行番号
+  unsigned long long pos;   // 指定箇所を示すビットボード
+
+  while(1){
+    file=0 + (int)( rand() * (7 - 0 + 1.0) / (1.0 + RAND_MAX));
+    rank=0 + (int)( rand() * (7 - 0 + 1.0) / (1.0 + RAND_MAX));
+    // 受け取った座標からビットボードを生成
+    pos = PosTranslate(7-file, rank+1);
+    if((pos&valid)!=0){
+      break;
+    }
+
+  }
+
+
+  return pos;
 }
 
 // 座標をunsigned long longのposに変換する関数
