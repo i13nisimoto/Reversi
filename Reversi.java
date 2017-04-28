@@ -15,22 +15,40 @@ class Board{
 
 class Reversi{
   static final int INPUT_ERROR=3;
-  static Scanner sc =new Scanner(System.in);
+
+
   public static void main(String args[]){
     int gameMode;
 
     while(true){
       System.out.print("モードを選択してください。\n 先手 vs 後手\n0: 人 vs 人\n1: 人 vs AI\n2: AI vs AI\n9: 終了\n");
-      gameMode=sc.nextInt();
+      gameMode=KeyBoard.KeyBoardIntvalue();//sc.nextInt();
       switch(gameMode){
         case 0: GameManVsMan(); break;
-        //case 1: GameManVsAI();break;
-        //case 2: GameAIVsAI();break;
-        //case 9: System.out.print("終了します。\n"); return 0;
+        case 1: GameManVsAI();break;
+        case 2: GameAIVsAI();break;
+        case 9: System.out.print("終了します。\n"); System.exit(1);
         default: System.out.print("エラー。もう一度入力してください\n"); break;
       }
     }
   }
+  static Board clone(Board board){
+    Board copy=new Board();
+    copy.black = board.black;
+    copy.white = board.white;
+    copy.teban = board.teban;
+    copy.move_num = board.move_num;
+    return copy;
+  }
+  static int getDiscColor(int x,int y,Board board){
+    long tmp=1L;
+    tmp<<=(7-y)*8;
+    tmp<<=(7-x);
+    if((tmp&board.black)!=0)return -1;
+    else if((tmp&board.white)!=0)return 1;
+    else return 0;
+  }
+
   static void GameManVsMan(){
     Board board=new Board();
     long pos,valid;
@@ -55,7 +73,94 @@ class Reversi{
     }
 
   }
+  static void GameManVsAI(){
+    Board board=new Board();
+    long pos=0, valid=0;
+    System.out.print("人が先手:0  AIが先手:1\n");
+    int turn=KeyBoard.KeyBoardIntvalue();//sc.nextInt();
+    Init(board);
+    ShowBoard(board);
 
+    // 石を置く
+    while(board.teban!=board.GAME_OVER){
+      // 合法手を得る
+
+      valid = GenValidMove(board);
+      // 手を受け取る
+      switch (board.teban) {
+        case -1:if(turn==0)pos = GetPos();
+        else {
+          AI ai_check=new AI(clone(board),-1);
+          pos=ai_check.compute();
+        }break;
+        //case GOTE:pos=GetPos_AI(valid);break;
+        // default :printf("%s\n","err" );break;
+        case 1:if(turn==1)pos = GetPos();
+        else {
+          AI ai_check=new AI(clone(board),1);
+          pos=ai_check.compute();
+        }break;
+        default :System.out.printf("%s\n","err" );break;
+      }
+
+      if( pos == INPUT_ERROR ){
+        System.out.print("エラーです。\n");
+        continue;
+      }else if( (pos & valid) == 0){
+        System.out.print("非合法手です。\n");
+        continue;
+      }
+      Put(board, pos);
+      ShowBoard(board);
+
+      CheckFinishPass(board);
+    }
+
+    ShowResult(board);
+
+
+  }
+  static void GameAIVsAI(){
+    Board board=new Board();
+    long pos=0, valid=0;
+    Init(board);
+    ShowBoard(board);
+
+    // 石を置く
+    while(board.teban!=board.GAME_OVER){
+      // 合法手を得る
+
+      valid = GenValidMove(board);
+      // 手を受け取る
+      switch (board.teban) {
+        case -1:AI ai_check=new AI(clone(board),-1);
+        pos=ai_check.compute();
+        break;
+        //case GOTE:pos=GetPos_AI(valid);break;
+        // default :printf("%s\n","err" );break;
+        case 1:AI ai_check1=new AI(clone(board),1);
+        pos=ai_check1.compute();
+        break;
+        default :System.out.printf("%s\n","err" );break;
+      }
+
+      if( pos == INPUT_ERROR ){
+        System.out.print("エラーです。\n");
+        continue;
+      }else if( (pos & valid) == 0){
+        System.out.print("非合法手です。\n");
+        continue;
+      }
+      Put(board, pos);
+      ShowBoard(board);
+
+      CheckFinishPass(board);
+    }
+
+    ShowResult(board);
+
+
+  }
   static void Init(Board board){
     board.black = ((long)1<<28)|((long)1<<35);
     board.white = ((long)1<<27)|((long)1<<36);
@@ -69,11 +174,11 @@ class Reversi{
     // 盤面表示
     for ( int i = 0; i < 64 ; i++){
       // 行番号
-      if(i % 8 == 0) System.out.print(rank++);
+      if(i % 8 == 0) System.out.print(rank+++" ");
       // 盤面状態表示
       if( ( board.black & pos )!= 0) System.out.print("黒");
       else if( ( board.white & pos ) != 0) System.out.print("白");
-      else System.out.print("口");
+      else System.out.print("・");
       // 8回表示が終わるごとに改行
       if(i % 8 == 7) System.out.print("\n");
       // posを一つずらす
@@ -88,6 +193,7 @@ class Reversi{
       case 1: System.out.print("後手\n"); break;
       default: break;
     }
+    System.out.println(AI.valueBoard(board,(-1)*board.teban));
   }
   static long NumOfStone(long bits){
     bits = bits - (bits >>> 1 & 0x5555555555555555L);                           // 2bitごと
@@ -115,8 +221,8 @@ class Reversi{
     long pos;   // 指定箇所を示すビットボード
 
     System.out.print("座標を入力してください。(横　縦)\n");
-    file=sc.nextInt();
-    rank=sc.nextInt();
+    file=KeyBoard.KeyBoardIntvalue();//sc.nextInt();
+    rank=KeyBoard.KeyBoardIntvalue();//sc.nextInt();
     //(" %d%d", &file, &rank);
 
     // 受け取った座標からビットボードを生成
@@ -362,5 +468,36 @@ class Reversi{
     }
     return 0;
   }
+  //パスするかチェックする
+  static int CheckPass(Board board){
+    long valid;
 
+    valid = GenValidMove(board);
+
+    // 終了・パス判定
+    if( valid == 0 ){
+
+      return 1;
+    }
+    return 0;
+  }
+
+
+}
+class KeyBoard{
+  static Scanner sc =new Scanner(System.in);
+  static int KeyBoardIntvalue(){
+    int tmp;
+    while(true){
+      String s= sc.next();
+      try{
+        tmp=Integer.parseInt(s);
+        break;
+      }catch(Exception e){
+        System.out.println("数字を入力してください");
+
+      }
+    }
+    return tmp;
+  }
 }
