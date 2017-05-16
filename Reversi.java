@@ -77,7 +77,9 @@ class Reversi{
     Board board=new Board();
     long pos=0, valid=0;
     System.out.print("人が先手:0  AIが先手:1\n");
-    int turn=KeyBoard.KeyBoardIntvalue();//sc.nextInt();
+    int turn=KeyBoard.KeyBoardIntvalue(0,1);//sc.nextInt();
+    // System.out.print("誰のAIを使いますか\n0:西本　1:山村　2:田村\n");
+    // int whoAI=KeyBoard.KeyBoardIntvalue();
     Init(board);
     ShowBoard(board);
 
@@ -90,14 +92,14 @@ class Reversi{
       switch (board.teban) {
         case -1:if(turn==0)pos = GetPos();
         else {
-          AI ai_check=new AI(clone(board),-1);
+          AI_alpha ai_check=new AI_alpha(clone(board),-1);
           pos=ai_check.compute();
         }break;
         //case GOTE:pos=GetPos_AI(valid);break;
         // default :printf("%s\n","err" );break;
         case 1:if(turn==1)pos = GetPos();
         else {
-          AI ai_check=new AI(clone(board),1);
+          AI_alpha ai_check=new AI_alpha(clone(board),1);
           pos=ai_check.compute();
         }break;
         default :System.out.printf("%s\n","err" );break;
@@ -133,12 +135,12 @@ class Reversi{
       valid = GenValidMove(board);
       // 手を受け取る
       switch (board.teban) {
-        case -1:AI ai_check=new AI(clone(board),-1);
+        case -1:AI_alpha ai_check=new AI_alpha(clone(board),-1);
         pos=ai_check.compute();
         break;
         //case GOTE:pos=GetPos_AI(valid);break;
         // default :printf("%s\n","err" );break;
-        case 1:AI ai_check1=new AI(clone(board),1);
+        case 1:AI_alpha ai_check1=new AI_alpha(clone(board),1);
         pos=ai_check1.compute();
         break;
         default :System.out.printf("%s\n","err" );break;
@@ -193,7 +195,7 @@ class Reversi{
       case 1: System.out.print("後手\n"); break;
       default: break;
     }
-    System.out.println(AI.valueBoard(board,(-1)*board.teban));
+    System.out.println("評価値="+AI_alpha.valueBoard(board,(-1)*board.teban));
   }
   static long NumOfStone(long bits){
     bits = bits - (bits >>> 1 & 0x5555555555555555L);                           // 2bitごと
@@ -492,12 +494,29 @@ class KeyBoard{
       String s= sc.next();
       try{
         tmp=Integer.parseInt(s);
-        break;
+        return tmp;
       }catch(Exception e){
-        System.out.println("数字を入力してください");
-
+        //System.out.println("数字を入力してください");
+        return -1;
       }
     }
-    return tmp;
+
+  }
+  static int KeyBoardIntvalue(int min,int max){
+    int tmp;
+    while(true){
+      String s= sc.next();
+      try{
+        tmp=Integer.parseInt(s);
+        if(tmp>=min&&tmp<=max){
+          return tmp;
+        }
+        System.out.println("指定された数字を入力してください");
+      }catch(Exception e){
+        System.out.println("数字を入力してください");
+        //return -1;
+      }
+    }
+
   }
 }
