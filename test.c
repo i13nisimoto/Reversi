@@ -130,9 +130,11 @@ void GameManVsAI(void){
         valid = GenValidMove(&board);
         // 手を受け取る
         switch (board.teban) {
-          case SENTE:pos = GetPos();break;
-          case GOTE:pos=GetPos_AI(valid);break;
-          default :printf("%s\n","err" );break;
+          // case SENTE:pos = GetPos();break;
+          // case GOTE:pos=GetPos_AI(valid);break;
+          // default :printf("%s\n","err" );break;
+          AI ai=new AI(cloneBoard(board));
+          pos=ai.compute();
         }
 
         if( pos == INPUT_ERROR ){
