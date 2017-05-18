@@ -93,7 +93,7 @@ class Reversi{
             }
             default: break;
           }
-
+	  break;
         }
         //case GOTE:pos=GetPos_AI(valid);break;
         // default :printf("%s\n","err" );break;
@@ -120,6 +120,7 @@ class Reversi{
             }
             default: break;
           }
+  	  break;
         }
       }
 
