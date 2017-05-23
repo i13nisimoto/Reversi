@@ -152,14 +152,14 @@ class Reversi{
       }
 
       System.out.print("プレイヤー1を選択してください：");
-      board.player1=KeyBoard.KeyBoardIntvalue(0,5);
-      if(board.player1==5)System.exit(1);
+      board.player1=KeyBoard.KeyBoardIntvalue(0,4);
+      if(board.player1==4)System.exit(1);
       if(board.player1!=0){
         System.out.print("探索する深さを選択してください：");
         board.player1_searchLevel=KeyBoard.KeyBoardIntvalue(1,9);
       }
       System.out.print("プレイヤー2を選択してください：");
-      board.player2=KeyBoard.KeyBoardIntvalue(0,4);
+      board.player2=KeyBoard.KeyBoardIntvalue(0,3);
       if(board.player2!=0){
         System.out.print("探索する深さを選択してください：");
         board.player2_searchLevel=KeyBoard.KeyBoardIntvalue(1,9);
