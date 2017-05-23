@@ -4,6 +4,7 @@ public class AI_alpha {
   private static  int SEARCH_LEVEL = 8;
   // メインパネルへの参照
   public static Board board;
+  public static int cnt;
   // 盤面の各場所の価値
   static final int valueOfPlace1[][] = {
     {120, -20, 20,  5,  5, 20, -20, 120},
@@ -54,6 +55,7 @@ public class AI_alpha {
     // 場所を求める
     int x = temp % 8;
     int y = temp / 8;
+
     long pos=Reversi.PosTranslate(x,y);
     return pos;
   }
@@ -75,10 +77,10 @@ public class AI_alpha {
     // Min-Max法で求めた最大の評価値を持つ場所
     int bestX = 0;
     int bestY = 0;
-
     // ゲーム木の末端では盤面評価
     // その他のノードはMIN or MAXで伝播する
     if (level == 0) {
+      cnt++;
       return valueBoard(board,turn);
     }
 
@@ -92,6 +94,7 @@ public class AI_alpha {
 
     // もしパスの場合はそのまま盤面評価値を返す
     if (Reversi.CheckPass(board) == 1) {
+      cnt++;
       return valueBoard(board,turn);
     }
 
@@ -158,6 +161,8 @@ public class AI_alpha {
 
     if (level == SEARCH_LEVEL) {
       // ルートノードなら最大評価値を持つ場所を返す
+      System.out.println("探索ノード数:"+cnt);
+      cnt=0;
       return bestX + bestY * 8;
     } else {
       // 子ノードならノードの評価値を返す

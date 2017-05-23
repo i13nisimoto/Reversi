@@ -71,6 +71,7 @@ class Reversi{
       // 手を受け取る
       switch (board.teban) {
         case -1:{
+          long start =System.currentTimeMillis();
           switch(board.player1){
             case 0:{
               pos=GetPos();
@@ -94,11 +95,15 @@ class Reversi{
 
             default: break;
           }
-	  break;
+          long end = System.currentTimeMillis();
+          long interval = end - start;
+          System.out.println(interval + "ミリ秒");
+          break;
         }
         //case GOTE:pos=GetPos_AI(valid);break;
         // default :printf("%s\n","err" );break;
         case 1:{
+          long start =System.currentTimeMillis();
           switch(board.player2){
             case 0:{
               pos=GetPos();
@@ -121,7 +126,10 @@ class Reversi{
             }
             default: break;
           }
-  	  break;
+          long end = System.currentTimeMillis();
+          long interval = end - start;
+          System.out.println(interval + "ミリ秒");
+          break;
         }
       }
 
@@ -133,9 +141,9 @@ class Reversi{
           continue;
         }
         Put(board, pos);
-        ShowBoard(board);
 
         CheckFinishPass(board);
+        ShowBoard(board);
       }
 
       ShowResult(board);
@@ -185,13 +193,14 @@ class Reversi{
       //石数表示
       System.out.printf("黒石: %d個, 白石: %d個\n", NumOfStone(board.black), NumOfStone(board.white));
       // 手番表示
-      System.out.print("\n手番: ");
+
       switch(board.teban){
-        case -1: System.out.print("先手\n"); break;
-        case 1: System.out.print("後手\n"); break;
+        case -1: System.out.print("手番: 先手\n"); break;
+        case 1: System.out.print("手番: 後手\n"); break;
         default: break;
       }
-      System.out.println("評価値="+AI_alpha.valueBoard(board,(-1)*board.teban));
+      System.out.println("---------------------------");
+      //System.out.println("評価値="+AI_alpha.valueBoard(board,(-1)*board.teban));
     }
     static long NumOfStone(long bits){
       bits = bits - (bits >>> 1 & 0x5555555555555555L);                           // 2bitごと
@@ -219,8 +228,10 @@ class Reversi{
       long pos;   // 指定箇所を示すビットボード
 
       System.out.print("座標を入力してください。(横　縦)\n");
-      file=KeyBoard.KeyBoardIntvalue();//sc.nextInt();
-      rank=KeyBoard.KeyBoardIntvalue();//sc.nextInt();
+      int tmp[]=KeyBoard.KeyBoardGetPos();//sc.nextInt();
+      file=tmp[0];
+      rank=tmp[1];
+      //rank=KeyBoard.KeyBoardGetPos();//sc.nextInt();
       //(" %d%d", &file, &rank);
 
       // 受け取った座標からビットボードを生成
@@ -471,7 +482,6 @@ class Reversi{
       long valid;
 
       valid = GenValidMove(board);
-
       // 終了・パス判定
       if( valid == 0 ){
 
@@ -514,5 +524,22 @@ class Reversi{
         }
       }
 
+    }
+    static int[] KeyBoardGetPos(){
+      int []pos={-1,-1};
+
+      while(true){
+        sc=new Scanner(System.in);
+        String s1= sc.next();
+        String s2=sc.next();
+        try{
+          pos[0]=Integer.parseInt(s1);
+          pos[1]=Integer.parseInt(s2);
+          return pos;
+        }catch(Exception e){
+          System.out.print("数字を入力してください:");
+          //return -1;
+        }
+      }
     }
   }
