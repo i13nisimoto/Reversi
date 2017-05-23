@@ -7,14 +7,14 @@ public class AI_alpha {
   public static int cnt;
   // 盤面の各場所の価値
   static final int valueOfPlace1[][] = {
-    {120, -20, 20,  5,  5, 20, -20, 120},
-    {-20, -40, -5, -5, -5, -5, -40, -20},
+    {120, 0, 20,  5,  5, 20, 0, 120},
+    {0, -40, -5, -5, -5, -5, -40, 0},
     { 20,  -5, 15,  3,  3, 15,  -5,  20},
     {  5,  -5,  3,  3,  3,  3,  -5,   5},
     {  5,  -5,  3,  3,  3,  3,  -5,   5},
     { 20,  -5, 15,  3,  3, 15,  -5,  20},
-    {-20, -40, -5, -5, -5, -5, -40, -20},
-    {120, -20, 20,  5,  5, 20, -20, 120}
+    {0, -40, -5, -5, -5, -5, -40, 0},
+    {120, 0, 20,  5,  5, 20, 0, 120}
   };
   static final int valueOfPlace2[][] = {
     {150, 20, 20,  5,  5, 20, 20, 150},
@@ -25,6 +25,16 @@ public class AI_alpha {
     { 20,  -5, 15,  3,  3, 15,  -5,  20},
     {20, 40, -5, -5, -5, -5, 40, 20},
     {150, 20, 20,  5,  5, 20, 20, 150}
+  };
+  static final int valueOfPlace3[][] = {
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1}
   };
 
   public static int turn;
@@ -196,8 +206,13 @@ public class AI_alpha {
       return value*turn;
     }
     else{
-          value = (int)Reversi.NumOfStone(board.black)-(int)Reversi.NumOfStone(board.white);
-          return -value*turn;
+      for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+          // 置かれた石とその場所の価値をかけて足していく
+          value += Reversi.getDiscColor(x, y,board) * valueOfPlace3[x][y];
+        }
+      }
+      return value*turn;
     }
   }
 

@@ -71,7 +71,7 @@ class Reversi{
       // 手を受け取る
       switch (board.teban) {
         case -1:{
-          long start =System.currentTimeMillis();
+          long start =System.nanoTime();
           switch(board.player1){
             case 0:{
               pos=GetPos();
@@ -95,7 +95,7 @@ class Reversi{
 
             default: break;
           }
-          long end = System.currentTimeMillis();
+          long end = System.nanoTime();
           long interval = end - start;
           System.out.println(interval + "ミリ秒");
           break;
@@ -103,7 +103,7 @@ class Reversi{
         //case GOTE:pos=GetPos_AI(valid);break;
         // default :printf("%s\n","err" );break;
         case 1:{
-          long start =System.currentTimeMillis();
+          long start =System.nanoTime();
           switch(board.player2){
             case 0:{
               pos=GetPos();
@@ -126,9 +126,9 @@ class Reversi{
             }
             default: break;
           }
-          long end = System.currentTimeMillis();
+          long end = System.nanoTime();
           long interval = end - start;
-          System.out.println(interval + "ミリ秒");
+          System.out.println(interval + "ナノ秒");
           break;
         }
       }
