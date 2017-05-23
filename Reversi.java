@@ -91,6 +91,7 @@ class Reversi{
               pos=ai.compute();
               break;
             }
+
             default: break;
           }
 	  break;
@@ -151,16 +152,17 @@ class Reversi{
       }
 
       System.out.print("プレイヤー1を選択してください：");
-      board.player1=KeyBoard.KeyBoardIntvalue(0,4);
+      board.player1=KeyBoard.KeyBoardIntvalue(0,5);
+      if(board.player1==5)System.exit(1);
       if(board.player1!=0){
         System.out.print("探索する深さを選択してください：");
-        board.player1_searchLevel=KeyBoard.KeyBoardIntvalue();
+        board.player1_searchLevel=KeyBoard.KeyBoardIntvalue(1,9);
       }
       System.out.print("プレイヤー2を選択してください：");
       board.player2=KeyBoard.KeyBoardIntvalue(0,4);
       if(board.player2!=0){
         System.out.print("探索する深さを選択してください：");
-        board.player2_searchLevel=KeyBoard.KeyBoardIntvalue();
+        board.player2_searchLevel=KeyBoard.KeyBoardIntvalue(1,9);
       }
     }
     static void ShowBoard(Board board){
@@ -505,9 +507,9 @@ class Reversi{
           if(tmp>=min&&tmp<=max){
             return tmp;
           }
-          System.out.println("指定された数字を入力してください");
+          System.out.print("指定された数字を入力してください:");
         }catch(Exception e){
-          System.out.println("数字を入力してください");
+          System.out.print("数字を入力してください:");
           //return -1;
         }
       }
