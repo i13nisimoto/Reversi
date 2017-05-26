@@ -2,18 +2,16 @@
 ====
 
 ##Overview
-αβ,Simple-αβ,minMax
+αβ,Simple-αβ,minMax  
 
 
 ## Requirement
-Use Java
+Use Java  
 ## Usage
-javac Reversi.java
-java Reversi
+javac Reversi.java  
+java Reversi  
 
-## Licence
 
-[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
 
-## Author
+## Author  
 Tak
