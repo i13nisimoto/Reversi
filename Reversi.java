@@ -18,7 +18,7 @@ class Board{
 
 class Reversi{
   static final int INPUT_ERROR=3;
-
+  static int player1_cnt,player2_cnt;
 
   public static void main(String args[]){
     // int gameMode;
@@ -71,7 +71,7 @@ class Reversi{
       // 手を受け取る
       switch (board.teban) {
         case -1:{
-          long start =System.nanoTime();
+          long start =System.currentTimeMillis();
           switch(board.player1){
             case 0:{
               pos=GetPos();
@@ -85,6 +85,8 @@ class Reversi{
             case 2:{
               AI_alpha ai=new AI_alpha(clone(board),board.teban,board.player1_searchLevel);
               pos=ai.compute();
+              player2_cnt+=ai.getNodeCnt();
+              ai.delNodeCnt();
               break;
             }
             case 3:{
@@ -95,15 +97,18 @@ class Reversi{
 
             default: break;
           }
-          long end = System.nanoTime();
+
+
+          long end = System.currentTimeMillis();
           long interval = end - start;
           System.out.println(interval + "ミリ秒");
           break;
+
         }
         //case GOTE:pos=GetPos_AI(valid);break;
         // default :printf("%s\n","err" );break;
         case 1:{
-          long start =System.nanoTime();
+          long start =System.currentTimeMillis();
           switch(board.player2){
             case 0:{
               pos=GetPos();
@@ -117,6 +122,8 @@ class Reversi{
             case 2:{
               AI_alpha ai=new AI_alpha(clone(board),board.teban,board.player2_searchLevel);
               pos=ai.compute();
+              player2_cnt+=ai.getNodeCnt();
+              ai.delNodeCnt();
               break;
             }
             case 3:{
@@ -126,9 +133,9 @@ class Reversi{
             }
             default: break;
           }
-          long end = System.nanoTime();
+          long end = System.currentTimeMillis();
           long interval = end - start;
-          System.out.println(interval + "ナノ秒");
+          System.out.println(interval + "ミリ秒");
           break;
         }
       }
@@ -194,12 +201,15 @@ class Reversi{
       System.out.printf("黒石: %d個, 白石: %d個\n", NumOfStone(board.black), NumOfStone(board.white));
       // 手番表示
 
+      System.out.println("---------------------------");
+
+
       switch(board.teban){
         case -1: System.out.print("手番: 先手\n"); break;
         case 1: System.out.print("手番: 後手\n"); break;
         default: break;
       }
-      System.out.println("---------------------------");
+
       //System.out.println("評価値="+AI_alpha.valueBoard(board,(-1)*board.teban));
     }
     static long NumOfStone(long bits){
@@ -477,20 +487,24 @@ class Reversi{
       }
       return 0;
     }
-    //パスするかチェックする
-    static int CheckPass(Board board){
+    static int CheckOnlyFinishPassNonShow(Board board){
       long valid;
 
       valid = GenValidMove(board);
+
       // 終了・パス判定
       if( valid == 0 ){
-
+        board.teban *= -1;
+        if(GenValidMove(board) == 0){
+          //終了
+          board.teban = board.GAME_OVER;
+          return 2;
+        }
+        board.teban *= -1;
         return 1;
       }
       return 0;
     }
-
-
   }
   class KeyBoard{
     static Scanner sc =new Scanner(System.in);

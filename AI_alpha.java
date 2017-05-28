@@ -48,9 +48,9 @@ public class AI_alpha {
   * @param panel メインパネルへの参照。
   */
   public AI_alpha(Board board,int turn,int searchLevel) {
-      this.board = board;
-      this.turn=turn;
-      SEARCH_LEVEL=searchLevel;
+    this.board = board;
+    this.turn=turn;
+    SEARCH_LEVEL=searchLevel;
   }
 
   /**
@@ -66,7 +66,9 @@ public class AI_alpha {
     int x = temp % 8;
     int y = temp / 8;
 
-    long pos=Reversi.PosTranslate(x,y);
+    System.out.println("横:"+x+"縦:"+y);
+    long pos=Reversi.PosTranslate(7-x,y+1);
+
     return pos;
   }
 
@@ -101,17 +103,23 @@ public class AI_alpha {
       // プレイヤーの手番では最小の評価値を見つけたいので最初に最大値をセットしておく
       value = Integer.MAX_VALUE;
     }
-
+    int checkFinPass=Reversi.CheckOnlyFinishPassNonShow(board);
     // もしパスの場合はそのまま盤面評価値を返す
-    if (Reversi.CheckPass(board) == 1) {
+
+    //
+    if (checkFinPass== 2) {//全部埋まっているとき
       cnt++;
       return valueBoard(board,turn);
+    }else if(checkFinPass==1){//パスするとき
+      board.teban*=-1;
     }
+    // if (Reversi.CheckPass(board) == 1) {
+    //   return valueBoard(board,turn);
+    // }
 
-    // 打てるところはすべて試す（試すだけで実際には打たない）
     for (int y = 0; y < 8; y++) {
       for (int x = 0; x < 8; x++) {
-        long pos=Reversi.PosTranslate(x,y);
+        long pos=Reversi.PosTranslate(7-x,y+1);
         if (((Reversi.GenValidMove(board)&pos)!=0)) {
           // Undo undo = new Undo(x, y);
           Board cloneBoard=Reversi.clone(board);
@@ -168,16 +176,20 @@ public class AI_alpha {
         }
       }
     }
-
     if (level == SEARCH_LEVEL) {
       // ルートノードなら最大評価値を持つ場所を返す
       System.out.println("探索ノード数:"+cnt);
-      cnt=0;
       return bestX + bestY * 8;
     } else {
       // 子ノードならノードの評価値を返す
       return value;
     }
+  }
+  int getNodeCnt(){
+    return cnt;
+  }
+  void delNodeCnt(){
+    cnt=0;
   }
   /**
   * 評価関数。盤面を評価して評価値を返す。盤面の場所の価値を元にする。
