@@ -27,6 +27,7 @@ public class AI_minMax {
   };
 
   public static int turn;
+  public static int cnt;
   static Random rnd = new Random();
 
   //AIの手番
@@ -77,6 +78,7 @@ public class AI_minMax {
     // ゲーム木の末端では盤面評価
     // その他のノードはMIN or MAXで伝播する
     if (level == 0) {
+      cnt++;
       return valueBoard(board,turn);
     }
 
@@ -88,9 +90,14 @@ public class AI_minMax {
       value = Integer.MAX_VALUE;
     }
 
+    int checkFinPass=Reversi.CheckOnlyFinishPassNonShow(board);
     // もしパスの場合はそのまま盤面評価値を返す
-    if (Reversi.CheckPass(board) == 1) {
+
+    if (checkFinPass== 2) {//全部埋まっているとき
+      cnt++;
       return valueBoard(board,turn);
+    }else if(checkFinPass==1){//パスするとき
+      board.teban*=-1;
     }
 
     // 打てるところはすべて試す（試すだけで実際には打たない）
@@ -133,11 +140,19 @@ public class AI_minMax {
 
     if (level == SEARCH_LEVEL) {
       // ルートノードなら最大評価値を持つ場所を返す
+      System.out.println("探索ノード数:"+cnt);
+
       return bestX + bestY * 8;
     } else {
       // 子ノードならノードの評価値を返す
       return value;
     }
+  }
+  int getNodeCnt(){
+    return cnt;
+  }
+  void delNodeCnt(){
+    cnt=0;
   }
 
   /**
