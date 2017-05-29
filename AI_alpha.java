@@ -202,25 +202,25 @@ public class AI_alpha {
     int valueSum = 0;
     //Reversi.ShowBoard(board);
     //int rand=rnd.nextInt();
-    if(board.move_num<35){
-      for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-          // 置かれた石とその場所の価値をかけて足していく
-          value += Reversi.getDiscColor(x, y,board) * valueOfPlace1[x][y];
-        }
-      }
-      return value*turn;
-    }
-    else if(board.move_num>35&&board.move_num<55){
-      for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-          // 置かれた石とその場所の価値をかけて足していく
-          value += Reversi.getDiscColor(x, y,board) * valueOfPlace2[x][y];
-        }
-      }
-      return value*turn;
-    }
-    else{
+    // if(board.move_num<35){
+    //   for (int x = 0; x < 8; x++) {
+    //     for (int y = 0; y < 8; y++) {
+    //       // 置かれた石とその場所の価値をかけて足していく
+    //       value += Reversi.getDiscColor(x, y,board) * valueOfPlace1[x][y];
+    //     }
+    //   }
+    //   return value*turn;
+    // }
+    // else if(board.move_num>35&&board.move_num<55){
+    //   for (int x = 0; x < 8; x++) {
+    //     for (int y = 0; y < 8; y++) {
+    //       // 置かれた石とその場所の価値をかけて足していく
+    //       value += Reversi.getDiscColor(x, y,board) * valueOfPlace2[x][y];
+    //     }
+    //   }
+    //   return value*turn;
+    // }
+    // else{
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
           // 置かれた石とその場所の価値をかけて足していく
@@ -228,7 +228,7 @@ public class AI_alpha {
         }
       }
       return value*turn;
-    }
+//    }
   }
 
   //   if(board.move_num>58){

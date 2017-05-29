@@ -94,8 +94,8 @@ class Reversi{
             case 3:{
               AI_beta ai=new AI_beta(clone(board),board.teban,board.player1_searchLevel);
               pos=ai.compute();
-              player1_cnt+=ai.getNodeCnt();
-              ai.delNodeCnt();
+            //  player1_cnt+=ai.getNodeCnt();
+              //ai.delNodeCnt();
               break;
             }
 
@@ -135,8 +135,8 @@ class Reversi{
             case 3:{
               AI_beta ai=new AI_beta(clone(board),board.teban,board.player2_searchLevel);
               pos=ai.compute();
-              player2_cnt+=ai.getNodeCnt();
-              ai.delNodeCnt();
+            //  player2_cnt+=ai.getNodeCnt();
+              //ai.delNodeCnt();
               break;
             }
             default: break;
