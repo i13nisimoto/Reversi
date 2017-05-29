@@ -19,7 +19,7 @@ class Board{
 class Reversi{
   static final int INPUT_ERROR=3;
   static int player1_cnt,player2_cnt;
-
+  static int player1_time,player2_time;
   public static void main(String args[]){
     // int gameMode;
 
@@ -106,6 +106,7 @@ class Reversi{
           long end = System.currentTimeMillis();
           long interval = end - start;
           System.out.println(interval + "ミリ秒");
+          player1_time+=interval;
           break;
 
         }
@@ -144,6 +145,7 @@ class Reversi{
           long end = System.currentTimeMillis();
           long interval = end - start;
           System.out.println(interval + "ミリ秒");
+          player1_time+=interval;
           break;
         }
       }
@@ -244,6 +246,10 @@ class Reversi{
       return (bits + (bits >>> 32)) & 0x000000000000007fL;                        //64bit
     }
     static int ShowResult(Board board){
+      System.out.println("黒ノード:"+player1_cnt);
+      System.out.println("白ノード:"+player2_cnt);
+      System.out.println("黒探索"+player1_time+"ms");
+      System.out.println("白探索"+player2_time+"ms");
       if(NumOfStone(board.black) > NumOfStone(board.white)){
         System.out.print("黒の勝ち！\n");
         return 1;
@@ -254,6 +260,7 @@ class Reversi{
         System.out.print("引き分け！\n");
         return 0;
       }
+
     }
     static long GetPos(){
       int file;  // 列番号
