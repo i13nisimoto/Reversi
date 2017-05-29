@@ -6,39 +6,41 @@ public class AI_beta {
   public static Board board;
   // 盤面の各場所の価値
   static final int valueOfPlace1[][] = {
-    {120, -50, 20,  10,  10, 20, -50, 120},
-    {-50, -90, -5, -5, -5, -5, -90, -50},
-    { 20,  -5, 30,  5,  5, 30,  -5,  20},
-    {  10,  -5,  5,  0,  0,  5,  -5,   10},
-    {  10,  -5,  5,  0,  0,  5,  -5,   10},
-    { 20,  -5, 30,  5,  5, 30,  -5,  20},
-    {-50, -90, -5, -5, -5, -5, -90, -50},
-    {120, -50, 20,  10,  10, 20, -50, 120}
+    {120, -10, 20,  10,  10, 20, -10, 120},
+    {-10, -30, -5, -5, -5, -5, -30, -10},
+    { 20,  -5, 30,  3,  3, 30,  -5,  20},
+    {  10,  -5,  3,  0,  0,  3,  -5,   10},
+    {  10,  -5,  3,  0,  0,  3,  -5,   10},
+    { 20,  -5, 30,  3,  3, 30,  -5,  20},
+    {-10, -30, -5, -5, -5, -5, -30, -10},
+    {120, -10, 20,  10,  10, 20, -10, 120}
   };
-  // static final int valueOfPlace1[][] = {
-  //   {120, -40, 20,  0,  0, 20, -40, 120},
-  //   {-40, -80, 0, 0, 0, 0, -80, -40},
-  //   { 20,  0, 0,  0,  0, 0,  0,  20},
-  //   {  0,  0,  0,  0,  0,  0,  0,   0},
-  //   {  0,  0,  0,  0,  0,  0,  0,   0},
-  //   { 20,  0, 0,  0,  0, 0,  0,  20},
-  //   {-40, -80, 0, 0, 0, 0, -80, -40},
-  //   {120, -40, 20,  0,  0, 20, -40, 120}
-  // };
+
   static final int valueOfPlace2[][] = {
     {150, 20, 20,  5,  5, 20, 20, 150},
     {20, 40, -5, -5, -5, -5, 40, 20},
     { 20,  -5, 15,  3,  3, 15,  -5,  20},
-    {  5,  -5,  3,  0,  0,  3,  -5,   5},
-    {  5,  -5,  3,  0,  0,  3,  -5,   5},
+    {  5,  -5,  3,  3,  3,  3,  -5,   5},
+    {  5,  -5,  3,  3,  3,  3,  -5,   5},
     { 20,  -5, 15,  3,  3, 15,  -5,  20},
     {20, 40, -5, -5, -5, -5, 40, 20},
     {150, 20, 20,  5,  5, 20, 20, 150}
   };
-
+  static final int valueOfPlace3[][] = {
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1}
+  };
   public static int turn;
-  public static int cnt;
   static Random rnd = new Random();
+
+  int cnt = 0;
+
   //AIの手番
 
 
@@ -65,8 +67,19 @@ public class AI_beta {
     // 場所を求める
     int x = temp % 8;
     int y = temp / 8;
+
+
+    System.out.println("横:"+x+"縦:"+y);
     long pos=Reversi.PosTranslate(x,y);
+
     return pos;
+  }
+
+  int getNodeCnt(){
+    return cnt;
+  }
+  void delNodeCnt(){
+    cnt=0;
   }
 
 
@@ -78,7 +91,7 @@ public class AI_beta {
   * @param beta β値。このノードの評価値は必ずβ値以下となる。
   * @return 子ノードでは盤面の評価値。ルートノードでは最大評価値を持つ場所（bestX + bestY * MAS）。
   */
-    public int simpleAlphaBeta(boolean flag, int level, int beta){
+  public int simpleAlphaBeta(boolean flag, int level, int beta){
 
     // ノードの評価値
     int value;
@@ -94,6 +107,7 @@ public class AI_beta {
     // ゲーム木の末端では盤面評価
     // その他のノードはMIN or MAXで伝播する
     if (level == 0) {
+      cnt++;
       return valueBoard(board,turn);
     }
 
@@ -106,14 +120,10 @@ public class AI_beta {
     }
 
     // パスの場合は評価値の変化なし
-/*    if (Reversi.CheckPass(board) == 1) {
-      return valueBoard(board,turn);
-    }
-*/
-
     int checkFinPass=Reversi.CheckOnlyFinishPassNonShow(board);
     // もしパスの場合はそのまま盤面評価値を返す
 
+    //
     if (checkFinPass== 2) {//全部埋まっているとき
       cnt++;
       return valueBoard(board,turn);
@@ -169,6 +179,7 @@ public class AI_beta {
 
     if (level == SEARCH_LEVEL) {
       // ルートノードなら最大評価値を持つ場所を返す
+      System.out.println("探索ノード数:"+cnt);
       return bestX + bestY * 8;
     } else {
       // 子ノードならノードの評価値を返す
@@ -184,8 +195,9 @@ public class AI_beta {
   */
   static int valueBoard(Board board,int turn) {
     int value = 0;
+    //value = kakutei(board,turn);
     //int rand=rnd.nextInt();
-    if(board.move_num<35){
+    if(board.move_num<=35){
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
           // 置かれた石とその場所の価値をかけて足していく
@@ -193,8 +205,8 @@ public class AI_beta {
         }
       }
       return value*turn;
-    }
-    else if(board.move_num>35&&board.move_num<55){
+    } else if(board.move_num>35&&board.move_num<55){
+      //value = kakutei(board,turn);
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
           // 置かれた石とその場所の価値をかけて足していく
@@ -202,11 +214,79 @@ public class AI_beta {
         }
       }
       return value*turn;
+    } else{
+      for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+          // 置かれた石とその場所の価値をかけて足していく
+          value += Reversi.getDiscColor(x, y,board) * valueOfPlace3[x][y];
+        }
+      }
+      return value*turn;
     }
-    else{
-          value = (int)Reversi.NumOfStone(board.black)-(int)Reversi.NumOfStone(board.white);
-          return -value*turn;
+  }
+  //@turn 自分黒-1　白1
+
+  static int kakutei(Board board,int turn){
+    int value = 0;
+    int color = 0;
+    int x,y;
+    //左上角
+    if(((color = Reversi.getDiscColor(0,0,board)))!=0){
+      value += color;
+      for(int i = 1; i < 8; i++){
+        if(Reversi.getDiscColor(0,i,board) == color){
+          value += color;
+        }
+      }
+      for (int i = 0; i < 8; i++) {
+        if(Reversi.getDiscColor(i,0,board) == color){
+          value += color;
+        }
+      }
     }
+    //右上角
+    if(((color = Reversi.getDiscColor(7,0,board)))!=0){
+      value += color;
+      for(int i = 6; i >= 0; i--){
+        if(Reversi.getDiscColor(i,0,board) == color){
+          value += color;
+        }
+      }
+      for (int i = 1; i < 8; i++) {
+        if(Reversi.getDiscColor(7,i,board) == color){
+          value += color;
+        }
+      }
+    }
+    //左下角
+    if(((color = Reversi.getDiscColor(0,7,board)))!=0){
+      value += color;
+      for(int i = 6; i >= 0; i--){
+        if(Reversi.getDiscColor(0,i,board) == color){
+          value += color;
+        }
+      }
+      for (int i = 1; i < 8; i++) {
+        if(Reversi.getDiscColor(i,7,board) == color){
+          value += color;
+        }
+      }
+    }
+    //右下角
+    if(((color = Reversi.getDiscColor(7,7,board)))!=0){
+      value += color;
+      for(int i = 6; i >= 0; i--){
+        if(Reversi.getDiscColor(i,7,board) == color){
+          value += color;
+        }
+      }
+      for (int i = 6; i >= 0; i--) {
+        if(Reversi.getDiscColor(7,i,board) == color){
+          value += color;
+        }
+      }
+    }
+    return turn*value*10;
   }
 
 }

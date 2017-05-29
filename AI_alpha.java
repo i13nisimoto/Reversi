@@ -200,8 +200,8 @@ public class AI_alpha {
   static int valueBoard(Board board,int turn) {
     int value = 0;
     int valueSum = 0;
-    //Reversi.ShowBoard(board);
-    //int rand=rnd.nextInt();
+    Reversi.ShowBoard(board);
+    int rand=rnd.nextInt();
     if(board.move_num<35){
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
