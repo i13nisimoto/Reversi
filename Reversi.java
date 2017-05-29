@@ -204,6 +204,7 @@ class Reversi{
         System.out.print("探索する深さを選択してください：");
         board.player2_searchLevel=KeyBoard.KeyBoardIntvalue(1,9);
       }
+      player1_cnt=player2_cnt=player1_time=player2_time=0;
     }
     static void ShowBoard(Board board){
       int rank=0;
