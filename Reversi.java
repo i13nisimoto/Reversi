@@ -80,18 +80,22 @@ class Reversi{
             case 1:{
               AI_minMax ai=new AI_minMax(clone(board),board.teban,board.player1_searchLevel);
               pos=ai.compute();
+              player1_cnt+=ai.getNodeCnt();
+              ai.delNodeCnt();
               break;
             }
             case 2:{
               AI_alpha ai=new AI_alpha(clone(board),board.teban,board.player1_searchLevel);
               pos=ai.compute();
-              player2_cnt+=ai.getNodeCnt();
+              player1_cnt+=ai.getNodeCnt();
               ai.delNodeCnt();
               break;
             }
             case 3:{
               AI_beta ai=new AI_beta(clone(board),board.teban,board.player1_searchLevel);
               pos=ai.compute();
+              player1_cnt+=ai.getNodeCnt();
+              ai.delNodeCnt();
               break;
             }
 
@@ -117,6 +121,8 @@ class Reversi{
             case 1:{
               AI_minMax ai=new AI_minMax(clone(board),board.teban,board.player2_searchLevel);
               pos=ai.compute();
+              player2_cnt+=ai.getNodeCnt();
+              ai.delNodeCnt();
               break;
             }
             case 2:{
@@ -129,6 +135,8 @@ class Reversi{
             case 3:{
               AI_beta ai=new AI_beta(clone(board),board.teban,board.player2_searchLevel);
               pos=ai.compute();
+              player2_cnt+=ai.getNodeCnt();
+              ai.delNodeCnt();
               break;
             }
             default: break;
@@ -151,22 +159,21 @@ class Reversi{
 
         CheckFinishPass(board);
         ShowBoard(board);
-        System.out.println("***********************************");
-        for (int y = 0; y < 8; y++) {
-          for (int x = 0; x < 8; x++) {
-
-            int value = Reversi.getDiscColor(x, y,board);
-            if(value==-1){
-              System.out.print("黒");
-            }else if(value==1){
-              System.out.print("白");
-            }
-            else{
-              System.out.print("・");
-            }
-          }
-          System.out.println("");
-        }
+        // for (int y = 0; y < 8; y++) {
+        //   for (int x = 0; x < 8; x++) {
+        //
+        //     int value = Reversi.getDiscColor(x, y,board);
+        //     if(value==-1){
+        //       System.out.print("黒");
+        //     }else if(value==1){
+        //       System.out.print("白");
+        //     }
+        //     else{
+        //       System.out.print("・");
+        //     }
+        //   }
+        //   System.out.println("");
+        // }
       }
 
       ShowResult(board);

@@ -136,7 +136,7 @@ public class AI_alpha {
           // 子ノードとこのノードの評価値を比較する
           if (flag) {
             // AIのノードなら子ノードの中で最大の評価値を選ぶ
-            if (childValue >= value) {
+            if (childValue > value) {
               value = childValue;
               // α値を更新
               alpha = value;
@@ -154,7 +154,7 @@ public class AI_alpha {
             }
           } else {
             // プレイヤーのノードなら子ノードの中で最小の評価値を選ぶ
-            if (childValue <= value) {
+            if (childValue < value) {
               value = childValue;
               // β値を更新
               beta = value;
@@ -199,6 +199,7 @@ public class AI_alpha {
   */
   static int valueBoard(Board board,int turn) {
     int value = 0;
+    int valueSum = 0;
     //Reversi.ShowBoard(board);
     //int rand=rnd.nextInt();
     if(board.move_num<35){
