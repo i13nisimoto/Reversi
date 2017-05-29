@@ -112,6 +112,8 @@ public class AI_alpha {
       return valueBoard(board,turn);
     }else if(checkFinPass==1){//パスするとき
       board.teban*=-1;
+      //flag=!flag;
+      //level--;  //パスした際は探索の展開に含まれない気がするのでいらない？？？？
     }
     // if (Reversi.CheckPass(board) == 1) {
     //   return valueBoard(board,turn);
@@ -126,12 +128,7 @@ public class AI_alpha {
           // 試しに打ってみる（盤面描画はしないのでtrue指定）
           // panel.putDownStone(x, y, true);
           Reversi.Put(board,pos);
-          // // ひっくり返す（盤面描画はしないのでtrue指定）
-          // panel.reverse(undo, true);
-          // // 手番を変える
-          // panel.nextTurn();
-          // 子ノードの評価値を計算（再帰）
-          // 今度は相手の番なのでflagが逆転する
+
           childValue = alphaBeta(!flag, level - 1, alpha, beta);
           // 子ノードとこのノードの評価値を比較する
           if (flag) {
@@ -143,9 +140,6 @@ public class AI_alpha {
               bestX = x;
               bestY = y;
             }
-            // このノードの現在のvalueが受け継いだβ値より大きかったら
-            // この枝が選ばれることはないのでこれ以上評価しない
-            // = forループをぬける
             if (value > beta) {  // βカット
               //System.out.println("βカット");
               // 打つ前に戻す
@@ -161,11 +155,8 @@ public class AI_alpha {
               bestX = x;
               bestY = y;
             }
-            // このノードのvalueが親から受け継いだα値より小さかったら
-            // この枝が選ばれることはないのでこれ以上評価しない
-            // = forループをぬける
+
             if (value < alpha) {  // αカット
-              //                            System.out.println("αカット");
               // 打つ前に戻す
               board=cloneBoard;
               return value;
@@ -199,55 +190,95 @@ public class AI_alpha {
   */
   static int valueBoard(Board board,int turn) {
     int value = 0;
-    int valueSum = 0;
-    int rand=rnd.nextInt();
-    if(board.move_num<35){
-      for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-          // 置かれた石とその場所の価値をかけて足していく
-          value += Reversi.getDiscColor(x, y,board) * valueOfPlace1[x][y];
-        }
-      }
-      return value*turn;
+    /*
+    疑似開放度
+    盤面の状態から開放度を推測する
+    */
+    long tmp=board.black|board.white;
+    if(board.move_num>56){//終わりの方
+          for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+              // 置かれた石とその場所の価値をかけて足していく
+              value += Reversi.getDiscColor(x, y,board) * valueOfPlace3[x][y];
+            }
+          }
+          return value*turn;
+
+    }else if((tmp&0x8100000000000081L)!=0){//終盤
+          for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+              // 置かれた石とその場所の価値をかけて足していく
+              value += Reversi.getDiscColor(x, y,board) * valueOfPlace2[x][y];
+            }
+          }
+          return value*turn;
+
+    }else if((tmp&0xFF818181818181FFL)!=0){//中盤
+          for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+              // 置かれた石とその場所の価値をかけて足していく
+              value += Reversi.getDiscColor(x, y,board) * valueOfPlace2[x][y];
+            }
+          }
+          value+=openDeg(board,turn);
+          return value*turn;
+    }else {
+          for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+              // 置かれた石とその場所の価値をかけて足していく
+              value += Reversi.getDiscColor(x, y,board) * valueOfPlace1[x][y];
+            }
+          }
+          value+=openDeg(board,turn);
+          return value*turn;
     }
-    else if(board.move_num>35&&board.move_num<55){
-      for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-          // 置かれた石とその場所の価値をかけて足していく
-          value += Reversi.getDiscColor(x, y,board) * valueOfPlace2[x][y];
-        }
-      }
-      return value*turn;
-    }
-    else{
-      for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-          // 置かれた石とその場所の価値をかけて足していく
-          value += Reversi.getDiscColor(x, y,board) * valueOfPlace3[x][y];
-        }
-      }
-      return value*turn;
-    }
+    //   if(board.move_num<35){
+    //     for (int x = 0; x < 8; x++) {
+    //       for (int y = 0; y < 8; y++) {
+    //         // 置かれた石とその場所の価値をかけて足していく
+    //         value += Reversi.getDiscColor(x, y,board) * valueOfPlace1[x][y];
+    //       }
+    //     }
+    //     return value*turn;
+    //   }
+    //   else if(board.move_num>35&&board.move_num<55){
+    //     for (int x = 0; x < 8; x++) {
+    //       for (int y = 0; y < 8; y++) {
+    //         // 置かれた石とその場所の価値をかけて足していく
+    //         value += Reversi.getDiscColor(x, y,board) * valueOfPlace2[x][y];
+    //       }
+    //     }
+    //     return value*turn;
+    //   }
+    //   else{
+    //     for (int x = 0; x < 8; x++) {
+    //       for (int y = 0; y < 8; y++) {
+    //         // 置かれた石とその場所の価値をかけて足していく
+    //         value += Reversi.getDiscColor(x, y,board) * valueOfPlace3[x][y];
+    //       }
+    //     }
+    //     return value*turn;
+    //   }
+    // }
   }
-
-  //   if(board.move_num>58){
-  //     int value = (int)Reversi.NumOfStone(board.black)-(int)Reversi.NumOfStone(board.white);
-  //
-  //
-  //     return -value*turn;
-  //  }
-  //   else{
-  //     //System.out.println("着手可能数が多い方を選ぶ");
-  //     int value=0;
-  //     for(int i=0;i<8;i++){
-  //       for(int j=0;j<8;j++){
-  //         long pos=Reversi.PosTranslate(i,j);
-  //         if (((Reversi.GenValidMove(board)&pos)!=0)) {
-  //           value++;
-  //         }
-  //       }
-  //     }
-  //     return -value*turn;
-  //   }
-
+  static int openDeg(Board board,int turn){
+    int value=0;
+    for(int x=1;x<7;x++){
+      for(int y=1;y<7;y++){
+        if(Reversi.getDiscColor(x,y,board)==0){
+          if(Reversi.getDiscColor(x-1,y-1,board)!=0)value++;
+          if(Reversi.getDiscColor(x  ,y-1,board)!=0)value++;
+          if(Reversi.getDiscColor(x+1,y-1,board)!=0)value++;
+          if(Reversi.getDiscColor(x-1,y  ,board)!=0)value++;
+          if(Reversi.getDiscColor(x+1,y  ,board)!=0)value++;
+          if(Reversi.getDiscColor(x-1,y+1,board)!=0)value++;
+          if(Reversi.getDiscColor(x  ,y+1,board)!=0)value++;
+          if(Reversi.getDiscColor(x+1,y+1,board)!=0)value++;
+        }
+      }
+    }
+    if(-board.teban==turn){
+      return value;
+    }else return -value;
+  }
 }
