@@ -136,7 +136,7 @@ public class AI_alpha {
           // 子ノードとこのノードの評価値を比較する
           if (flag) {
             // AIのノードなら子ノードの中で最大の評価値を選ぶ
-            if (childValue > value) {
+            if (childValue >= value) {
               value = childValue;
               // α値を更新
               alpha = value;
@@ -147,14 +147,14 @@ public class AI_alpha {
             // この枝が選ばれることはないのでこれ以上評価しない
             // = forループをぬける
             if (value > beta) {  // βカット
-              //                            System.out.println("βカット");
+              //System.out.println("βカット");
               // 打つ前に戻す
               board=cloneBoard;
               return value;
             }
           } else {
             // プレイヤーのノードなら子ノードの中で最小の評価値を選ぶ
-            if (childValue < value) {
+            if (childValue <= value) {
               value = childValue;
               // β値を更新
               beta = value;
@@ -179,6 +179,7 @@ public class AI_alpha {
     if (level == SEARCH_LEVEL) {
       // ルートノードなら最大評価値を持つ場所を返す
       System.out.println("探索ノード数:"+cnt);
+
       return bestX + bestY * 8;
     } else {
       // 子ノードならノードの評価値を返す
@@ -198,6 +199,7 @@ public class AI_alpha {
   */
   static int valueBoard(Board board,int turn) {
     int value = 0;
+    //Reversi.ShowBoard(board);
     //int rand=rnd.nextInt();
     if(board.move_num<35){
       for (int x = 0; x < 8; x++) {

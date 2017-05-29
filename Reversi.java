@@ -47,9 +47,9 @@ class Reversi{
     return copy;
   }
   static int getDiscColor(int x,int y,Board board){
-    long tmp=1L;
-    tmp<<=(7-y)*8;
-    tmp<<=(7-x);
+    long tmp=0x8000000000000000L;
+    tmp=tmp>>>x;
+    tmp=tmp>>>(y*8);
     if((tmp&board.black)!=0)return -1;
     else if((tmp&board.white)!=0)return 1;
     else return 0;
@@ -151,6 +151,22 @@ class Reversi{
 
         CheckFinishPass(board);
         ShowBoard(board);
+        System.out.println("***********************************");
+        for (int y = 0; y < 8; y++) {
+          for (int x = 0; x < 8; x++) {
+
+            int value = Reversi.getDiscColor(x, y,board);
+            if(value==-1){
+              System.out.print("黒");
+            }else if(value==1){
+              System.out.print("白");
+            }
+            else{
+              System.out.print("・");
+            }
+          }
+          System.out.println("");
+        }
       }
 
       ShowResult(board);
@@ -245,7 +261,7 @@ class Reversi{
       //(" %d%d", &file, &rank);
 
       // 受け取った座標からビットボードを生成
-      pos = PosTranslate(7-file, rank+1);
+      pos = PosTranslate(file, rank);
       return pos;
     }
     // long GetPos_AI(long valid){
@@ -269,12 +285,9 @@ class Reversi{
     // }
     // 座標をunsigned long longのposに変換する関数
     static long PosTranslate(int file, int rank){
-      int file_num=file;
-      long pos;
+      long pos=0x8000000000000000L;
 
-
-
-      pos = ( (long)1 << ( file_num + 8 * (8 - rank) ) );
+      pos = ( pos >>> ( file + 8 * (rank) ) );
 
       return pos;
     }
