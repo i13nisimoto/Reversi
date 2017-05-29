@@ -37,6 +37,7 @@ public class AI_beta {
   };
 
   public static int turn;
+  public static int cnt;
   static Random rnd = new Random();
   //AIの手番
 
@@ -105,8 +106,19 @@ public class AI_beta {
     }
 
     // パスの場合は評価値の変化なし
-    if (Reversi.CheckPass(board) == 1) {
+/*    if (Reversi.CheckPass(board) == 1) {
       return valueBoard(board,turn);
+    }
+*/
+
+    int checkFinPass=Reversi.CheckOnlyFinishPassNonShow(board);
+    // もしパスの場合はそのまま盤面評価値を返す
+
+    if (checkFinPass== 2) {//全部埋まっているとき
+      cnt++;
+      return valueBoard(board,turn);
+    }else if(checkFinPass==1){//パスするとき
+      board.teban*=-1;
     }
 
 
