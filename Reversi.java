@@ -13,7 +13,7 @@ class Board{
   int move_num;
   int player1,player2;
   int player1_searchLevel,player2_searchLevel;
-  String playerName[]={"human","Yo-kai","Tak","ATeR"};
+  String playerName[]={"human","Tamura","Nishimoto","Yamamura"};
 }
 
 class Reversi{
@@ -161,21 +161,7 @@ class Reversi{
 
         CheckFinishPass(board);
         ShowBoard(board);
-        // for (int y = 0; y < 8; y++) {
-        //   for (int x = 0; x < 8; x++) {
-        //
-        //     int value = Reversi.getDiscColor(x, y,board);
-        //     if(value==-1){
-        //       System.out.print("黒");
-        //     }else if(value==1){
-        //       System.out.print("白");
-        //     }
-        //     else{
-        //       System.out.print("・");
-        //     }
-        //   }
-        //   System.out.println("");
-        // }
+
       }
 
       ShowResult(board);
@@ -272,33 +258,13 @@ class Reversi{
       int tmp[]=KeyBoard.KeyBoardGetPos();//sc.nextInt();
       file=tmp[0];
       rank=tmp[1];
-      //rank=KeyBoard.KeyBoardGetPos();//sc.nextInt();
-      //(" %d%d", &file, &rank);
 
       // 受け取った座標からビットボードを生成
       pos = PosTranslate(file, rank);
       return pos;
     }
-    // long GetPos_AI(long valid){
-    //   int file;  // 列番号
-    //   int rank;   // 行番号
-    //    pos;   // 指定箇所を示すビットボード
-    //
-    //   while(1){
-    //     file=0 + (int)( rand() * (7 - 0 + 1.0) / (1.0 + RAND_MAX));
-    //     rank=0 + (int)( rand() * (7 - 0 + 1.0) / (1.0 + RAND_MAX));
-    //     // 受け取った座標からビットボードを生成
-    //     pos = PosTranslate(7-file, rank+1);
-    //     if((pos&valid)!=0){
-    //       break;
-    //     }
-    //
-    //   }
-    //
-    //
-    //   return pos;
-    // }
-    // 座標をunsigned long longのposに変換する関数
+
+    // 座標をlongのposに変換する関数
     static long PosTranslate(int file, int rank){
       long pos=0x8000000000000000L;
 
