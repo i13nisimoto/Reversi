@@ -67,7 +67,7 @@ public class AI_alpha {
     int y = temp / 8;
 
     System.out.println("横:"+x+"縦:"+y);
-    long pos=Reversi.PosTranslate(7-x,y+1);
+    long pos=Reversi.PosTranslate(x,y);
 
     return pos;
   }
@@ -119,7 +119,7 @@ public class AI_alpha {
 
     for (int y = 0; y < 8; y++) {
       for (int x = 0; x < 8; x++) {
-        long pos=Reversi.PosTranslate(7-x,y+1);
+        long pos=Reversi.PosTranslate(x,y);
         if (((Reversi.GenValidMove(board)&pos)!=0)) {
           // Undo undo = new Undo(x, y);
           Board cloneBoard=Reversi.clone(board);
