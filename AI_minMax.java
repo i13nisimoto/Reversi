@@ -177,12 +177,10 @@ public class AI_minMax {
         for (int y = 0; y < 8; y++) {
           // 置かれた石とその場所の価値をかけて足していく
           value += Reversi.getDiscColor(x, y,board) * valueOfPlace2[x][y];
-/*
           long pos=Reversi.PosTranslate(x,y);
           if (((Reversi.GenValidMove(board)&pos)!=0)) {
             value = value + 20;
           }
-*/
         }
       }
       return value*turn;
