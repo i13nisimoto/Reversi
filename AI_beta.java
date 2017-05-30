@@ -6,24 +6,24 @@ public class AI_beta {
   public static Board board;
   // 盤面の各場所の価値
   static final int valueOfPlace1[][] = {
-    {120, -10, 20,  10,  10, 20, -10, 120},
+    {120, -10, 20, 10, 10, 20, -10, 120},
     {-10, -30, -5, -5, -5, -5, -30, -10},
     { 20,  -5, 30,  3,  3, 30,  -5,  20},
-    {  10,  -5,  3,  0,  0,  3,  -5,   10},
-    {  10,  -5,  3,  0,  0,  3,  -5,   10},
+    { 10,  -5,  3,  0,  0,  3,  -5,  10},
+    { 10,  -5,  3,  0,  0,  3,  -5,  10},
     { 20,  -5, 30,  3,  3, 30,  -5,  20},
     {-10, -30, -5, -5, -5, -5, -30, -10},
-    {120, -10, 20,  10,  10, 20, -10, 120}
+    {120, -10, 20, 10, 10, 20, -10, 120}
   };
 
   static final int valueOfPlace2[][] = {
     {150, 20, 20,  5,  5, 20, 20, 150},
-    {20, 40, -5, -5, -5, -5, 40, 20},
-    { 20,  -5, 15,  3,  3, 15,  -5,  20},
-    {  5,  -5,  3,  3,  3,  3,  -5,   5},
-    {  5,  -5,  3,  3,  3,  3,  -5,   5},
-    { 20,  -5, 15,  3,  3, 15,  -5,  20},
-    {20, 40, -5, -5, -5, -5, 40, 20},
+    { 20, 40, -5, -5, -5, -5, 40,  20},
+    { 20, -5, 15,  3,  3, 15, -5,  20},
+    {  5, -5,  3,  3,  3,  3, -5,   5},
+    {  5, -5,  3,  3,  3,  3, -5,   5},
+    { 20, -5, 15,  3,  3, 15, -5,  20},
+    { 20, 40, -5, -5, -5, -5, 40,  20},
     {150, 20, 20,  5,  5, 20, 20, 150}
   };
   static final int valueOfPlace3[][] = {
@@ -193,20 +193,23 @@ public class AI_beta {
   *
   * @return 盤面の評価値。
   */
+  static boolean f = true;
   static int valueBoard(Board board,int turn) {
     int value = 0;
+    long tmp=board.black|board.white;
     //value = kakutei(board,turn);
     //int rand=rnd.nextInt();
-    if(board.move_num<=35){
+
+    if(board.move_num>=55){
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
           // 置かれた石とその場所の価値をかけて足していく
-          value += Reversi.getDiscColor(x, y,board) * valueOfPlace1[x][y];
+          value += Reversi.getDiscColor(x, y,board) * valueOfPlace3[x][y];
         }
       }
       return value*turn;
-    } else if(board.move_num>35&&board.move_num<55){
-      //value = kakutei(board,turn);
+    } else if(Reversi.getDiscColor(0, 0,board) != 0 || Reversi.getDiscColor(0, 7,board) != 0 || Reversi.getDiscColor(7, 0,board) != 0 || Reversi.getDiscColor(7, 7,board) != 0){
+      value = kakutei(board,turn);
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
           // 置かれた石とその場所の価値をかけて足していく
@@ -214,11 +217,11 @@ public class AI_beta {
         }
       }
       return value*turn;
-    } else{
+    } else {
       for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
           // 置かれた石とその場所の価値をかけて足していく
-          value += Reversi.getDiscColor(x, y,board) * valueOfPlace3[x][y];
+          value += Reversi.getDiscColor(x, y,board) * valueOfPlace1[x][y];
         }
       }
       return value*turn;
