@@ -38,15 +38,10 @@ public class AI_alpha {
   };
 
   public static int turn;
-  static Random rnd = new Random();
-  //AIの手番
 
 
-  /**
-  * コンストラクタ。メインパネルへの参照を保存。
-  *
-  * @param panel メインパネルへの参照。
-  */
+
+
   public AI_alpha(Board board,int turn,int searchLevel) {
     this.board = board;
     this.turn=turn;
@@ -58,8 +53,6 @@ public class AI_alpha {
   *
   */
   public long compute() {
-    // α-β法で石を打つ場所を決める
-    // 戻ってくる値は bestX+bestY*MASU
     int temp = alphaBeta(true, SEARCH_LEVEL, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
     // 場所を求める
@@ -72,15 +65,7 @@ public class AI_alpha {
     return pos;
   }
 
-  /**
-  * α-β法。最善手を探索する。打つ場所を探すだけで実際には打たない。
-  *
-  * @param flag AIの手番のときtrue、プレイヤーの手番のときfalse。
-  * @param level 先読みの手数。
-  * @param alpha α値。このノードの評価値は必ずα値以上となる。
-  * @param beta β値。このノードの評価値は必ずβ値以下となる。
-  * @return 子ノードでは盤面の評価値。ルートノードでは最大評価値を持つ場所（bestX + bestY * MAS）。
-  */
+
   public int alphaBeta(boolean flag, int level, int alpha, int beta) {
     // ノードの評価値
     int value;
@@ -89,24 +74,21 @@ public class AI_alpha {
     // Min-Max法で求めた最大の評価値を持つ場所
     int bestX = 0;
     int bestY = 0;
-    // ゲーム木の末端では盤面評価
-    // その他のノードはMIN or MAXで伝播する
+
     if (level == 0) {
       cnt++;
       return valueBoard(board,turn);
     }
 
     if (flag) {
-      // AIの手番では最大の評価値を見つけたいので最初に最小値をセットしておく
+      // AIの手番では最初に最小値をセットしておく
       value = Integer.MIN_VALUE;
     } else {
-      // プレイヤーの手番では最小の評価値を見つけたいので最初に最大値をセットしておく
+      // プレイヤーの手番では最初に最大値をセットしておく
       value = Integer.MAX_VALUE;
     }
     int checkFinPass=Reversi.CheckOnlyFinishPassNonShow(board);
-    // もしパスの場合はそのまま盤面評価値を返す
 
-    //
     if (checkFinPass== 2) {//全部埋まっているとき
       cnt++;
       return valueBoard(board,turn);
@@ -115,24 +97,18 @@ public class AI_alpha {
       //flag=!flag;
       //level--;  //パスした際は探索の展開に含まれない気がするのでいらない？？？？
     }
-    // if (Reversi.CheckPass(board) == 1) {
-    //   return valueBoard(board,turn);
-    // }
 
     for (int y = 0; y < 8; y++) {
       for (int x = 0; x < 8; x++) {
         long pos=Reversi.PosTranslate(x,y);
         if (((Reversi.GenValidMove(board)&pos)!=0)) {
-          // Undo undo = new Undo(x, y);
           Board cloneBoard=Reversi.clone(board);
-          // 試しに打ってみる（盤面描画はしないのでtrue指定）
-          // panel.putDownStone(x, y, true);
           Reversi.Put(board,pos);
 
           childValue = alphaBeta(!flag, level - 1, alpha, beta);
-          // 子ノードとこのノードの評価値を比較する
+
           if (flag) {
-            // AIのノードなら子ノードの中で最大の評価値を選ぶ
+            // AIのノード
             if (childValue > value) {
               value = childValue;
               // α値を更新
@@ -141,13 +117,12 @@ public class AI_alpha {
               bestY = y;
             }
             if (value > beta) {  // βカット
-              //System.out.println("βカット");
-              // 打つ前に戻す
+              //戻す
               board=cloneBoard;
               return value;
             }
           } else {
-            // プレイヤーのノードなら子ノードの中で最小の評価値を選ぶ
+            // プレイヤーのノード
             if (childValue < value) {
               value = childValue;
               // β値を更新
@@ -167,13 +142,12 @@ public class AI_alpha {
         }
       }
     }
-    if (level == SEARCH_LEVEL) {
-      // ルートノードなら最大評価値を持つ場所を返す
+    if (level == SEARCH_LEVEL) {//ルートノード
       System.out.println("探索ノード数:"+cnt);
 
       return bestX + bestY * 8;
     } else {
-      // 子ノードならノードの評価値を返す
+
       return value;
     }
   }
@@ -183,11 +157,7 @@ public class AI_alpha {
   void delNodeCnt(){
     cnt=0;
   }
-  /**
-  * 評価関数。盤面を評価して評価値を返す。盤面の場所の価値を元にする。
-  *
-  * @return 盤面の評価値。
-  */
+
   static int valueBoard(Board board,int turn) {
     int value = 0;
     /*
@@ -232,34 +202,7 @@ public class AI_alpha {
           //value+=openDeg(board,turn);
           return value*turn;
     }
-    //   if(board.move_num<35){
-    //     for (int x = 0; x < 8; x++) {
-    //       for (int y = 0; y < 8; y++) {
-    //         // 置かれた石とその場所の価値をかけて足していく
-    //         value += Reversi.getDiscColor(x, y,board) * valueOfPlace1[x][y];
-    //       }
-    //     }
-    //     return value*turn;
-    //   }
-    //   else if(board.move_num>35&&board.move_num<55){
-    //     for (int x = 0; x < 8; x++) {
-    //       for (int y = 0; y < 8; y++) {
-    //         // 置かれた石とその場所の価値をかけて足していく
-    //         value += Reversi.getDiscColor(x, y,board) * valueOfPlace2[x][y];
-    //       }
-    //     }
-    //     return value*turn;
-    //   }
-    //   else{
-    //     for (int x = 0; x < 8; x++) {
-    //       for (int y = 0; y < 8; y++) {
-    //         // 置かれた石とその場所の価値をかけて足していく
-    //         value += Reversi.getDiscColor(x, y,board) * valueOfPlace3[x][y];
-    //       }
-    //     }
-    //     return value*turn;
-    //   }
-    // }
+
   }
   static int openDeg(Board board,int turn){
     int value=0;
