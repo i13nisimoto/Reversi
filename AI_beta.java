@@ -76,7 +76,6 @@ public class AI_beta {
   * @param flag AIの手番のときtrue、プレイヤーの手番のときfalse。
   * @param level 先読みの手数。
   * @param beta β値。このノードの評価値は必ずβ値以下となる。
-  * @return 子ノードでは盤面の評価値。ルートノードでは最大評価値を持つ場所（bestX + bestY * MAS）。
   */
   public int simpleAlphaBeta(boolean flag, int level, int beta){
 

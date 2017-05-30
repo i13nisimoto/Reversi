@@ -1,8 +1,8 @@
 import java.util.Random;
 public class AI_minMax {
-  // 深読みするレベル（大きい値だとものすごい時間がかかってしまうので注意）
+  // 深読みするレベル
   private static int SEARCH_LEVEL = 6;
-  // メインパネルへの参照
+  // Boardへの参照
   public static Board board;
   // 盤面の各場所の価値
   static final int valueOfPlace1[][] = {
@@ -30,12 +30,7 @@ public class AI_minMax {
   public static int cnt;
   static Random rnd = new Random();
 
-  //AIの手番
-  /**
-  * コンストラクタ。メインパネルへの参照を保存。
-  *
-  * @param panel メインパネルへの参照。
-  */
+
   public AI_minMax(Board board,int turn,int searchLevel) {
     this.board = board;
     this.turn=turn;
@@ -43,11 +38,10 @@ public class AI_minMax {
   }
 
   /**
-  * コンピュータの手を決定する。
+  * コンピュータの手
   *
   */
   public long compute() {
-    // α-β法で石を打つ場所を決める
     // 戻ってくる値は bestX+bestY*MASU
     int temp = minMax(true, SEARCH_LEVEL);
 
@@ -63,7 +57,6 @@ public class AI_minMax {
   *
   * @param flag AIの手番のときtrue、プレイヤーの手番のときfalse。
   * @param level 先読みの手数。
-  * @return 子ノードでは盤面の評価値。ルートノードでは最大評価値を持つ場所（bestX + bestY * MAS）。
   */
 
   public int minMax(boolean flag, int level) {
@@ -75,23 +68,20 @@ public class AI_minMax {
     int bestX = 0;
     int bestY = 0;
 
-    // ゲーム木の末端では盤面評価
-    // その他のノードはMIN or MAXで伝播する
     if (level == 0) {
       cnt++;
       return valueBoard(board,turn);
     }
 
     if (flag) {
-      // AIの手番では最大の評価値を見つけたいので最初に最小値をセットしておく
+      // AIの手番では最初に最小値をセットしておく
       value = Integer.MIN_VALUE;
     } else {
-      // プレイヤーの手番では最小の評価値を見つけたいので最初に最大値をセットしておく
+      // プレイヤーの手番では最初に最大値をセットしておく
       value = Integer.MAX_VALUE;
     }
 
     int checkFinPass=Reversi.CheckOnlyFinishPassNonShow(board);
-    // もしパスの場合はそのまま盤面評価値を返す
 
     if (checkFinPass== 2) {//全部埋まっているとき
       cnt++;
@@ -100,21 +90,16 @@ public class AI_minMax {
       board.teban*=-1;
     }
 
-    // 打てるところはすべて試す（試すだけで実際には打たない）
+    // 打てるところはすべて試す
     for (int y = 0; y < 8; y++) {
       for (int x = 0; x < 8; x++) {
         long pos=Reversi.PosTranslate(x,y);
         if (((Reversi.GenValidMove(board)&pos)!=0)) {
           // Undo undo = new Undo(x, y);
           Board cloneBoard=Reversi.clone(board);
-          // 試しに打ってみる（盤面描画はしないのでtrue指定）
+          // 試しに打ってみる
           Reversi.Put(board,pos);
-          // ひっくり返す（盤面描画はしないのでtrue指定）
-          // panel.reverse(undo, true);
-          // 手番を変える
-          // panel.nextTurn();
-          // 子ノードの評価値を計算（再帰）
-          // 今度は相手の番なのでflagが逆転する
+
           childValue = minMax(!flag, level - 1);
           // 子ノードとこのノードの評価値を比較する
           if (flag) {
