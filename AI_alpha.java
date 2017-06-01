@@ -93,6 +93,7 @@ public class AI_alpha {
       cnt++;
       return valueBoard(board,turn);
     }else if(checkFinPass==1){//パスするとき
+      //CheckOnlyFinishPassNonShowで反転しているのでここで反転する必要はない
       board.teban*=-1;
       //flag=!flag;
       //level--;  //パスした際は探索の展開に含まれない気がするのでいらない？？？？
